@@ -3,7 +3,7 @@
 // Por Pedro Ribeiro CT7ABP
 // Coompativel com a maioria das placas Arduino, incluindo UNO e NANO
 
-#define SERIALDEBUG
+//#define SERIALDEBUG
 
 const byte keyditpin = 2; // Ligar a chave no pino correspondente ao ponto
 const byte keydahpin = 3; // Ligar a chave no pino correspondente ao traço, o pino comum liga ao
