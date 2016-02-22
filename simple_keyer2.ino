@@ -14,8 +14,8 @@ const byte spkpin = 5; // Pino da saida para speaker, ligar através de uma resi
                        // e um condensador de 10uF para evitar danos
 const byte speedpin = A0; // Pino que irá ligar ao cursor do potenciometro/trimmer de ajuste da
                           // velocidade
-const short cwspeed_min_ms = 1200/5; // Velociadade equivalente a 5 wpm
-const short cwspeed_max_ms = 1200/50; // Velociadade equivalente a 50 wpm
+const short cwspeed_min_ms = 1200/5; // Velocidade equivalente a 5 wpm
+const short cwspeed_max_ms = 1200/50; // Velocidade equivalente a 50 wpm
 const unsigned short cw_tone = 500; // Tom de 500Hz (onda quadrada) no pino definido como spkpin
 
 enum cwsym_t { SYM_DIT, SYM_DAH };
@@ -33,31 +33,31 @@ void setup() {
  pinMode(keydahpin,INPUT);
 
 // Configurar o Pin 13 como saida, este está nativamente ligado ao LED do UNO, NANO (e outros) e
-// poder� ser opcionalmente usado para ligar o buzzer activo
+// poderá ser opcionalmente usado para ligar o buzzer activo
  pinMode(ledpin,OUTPUT); 
- digitalWrite(ledpin,LOW); // Inicialmente o LED/Buzzer nao est�o activos
+ digitalWrite(ledpin,LOW); // Inicialmente o LED/Buzzer nao estão activos
 
 // Configurar o Pin 5 como saida a usar pelo autofalante, NAO LIGAR DIRECTO porque fará danos a ambos
-// autofalante e Arduino, ligar com uma resistência de 390ohm e um condensador de 10uF com o positivo
-// do lado do Arduino (valores a ajustar)
+// autofalante e Arduino, ligar com uma resistência de 220~390ohm e um condensador de 10uF com o
+// positivo do lado do Arduino (valores a ajustar)
  pinMode(spkpin,OUTPUT); 
  digitalWrite(spkpin,LOW); // Inicialmente speaker está inactivo
 }
 
 void ditdah(const cwsym_t dd, const unsigned short dit_ms) {
     digitalWrite(ledpin,HIGH); // LED/buzzer activos
-    tone(spkpin,cw_tone);
+    tone(spkpin,cw_tone); // Gera tom (onda quadrada)
     if(dd == SYM_DIT)
-      delay(dit_ms); // Gera som no speeker durante o tempo de ponto
+      delay(dit_ms); // Espera o tempo de ponto
     else
-      delay(dit_ms*3); // Gera som no speeker durante o tempo de traço
-    noTone(spkpin);
+      delay(dit_ms*3); // Espera o tempo de traço
+    noTone(spkpin); // Desactiva o tom
     digitalWrite(ledpin,LOW); // LED/buzzer inactivos
     delay(dit_ms); // Esperar o tempo de ponto antes de qualquer outro simbolo
 }
 
 void loop() {
-// true = HIGH significa que o pullup está a condicionar o estado da entrada, false = LOW, se a chave estiver primida
+// true = HIGH significa que o pullup está a condicionar o estado da entrada, false = LOW, se a chave estiver premida
  short potval = analogRead(speedpin);
  unsigned short ditspeed_ms = map(potval,0,(1<<10),cwspeed_min_ms,cwspeed_max_ms);
  bool ditstate = digitalRead(keyditpin);
@@ -72,10 +72,10 @@ void loop() {
  Serial.print(", DITMS = "); 
  Serial.println(ditspeed_ms);
 #endif
- if(dahstate == false) { // traço primido
+ if(dahstate == false) { // traço premido
    ditdah(SYM_DAH,ditspeed_ms);
  }
- if(ditstate == false) { // ponto primido
+ if(ditstate == false) { // ponto premido
    ditdah(SYM_DIT,ditspeed_ms);
  }
 }
